@@ -33,20 +33,28 @@ def move_head_knot(knot, direction):
 def move_knot(head, tail):
     if head[0] < tail[0] - 1:
         tail[0] -= 1
-        if head[1] != tail[1]:
-            tail[1] = head[1]
+        if head[1] > tail[1]:
+            tail[1] += 1
+        elif head[1] < tail[1]:
+            tail[1] -= 1
     elif head[0] > tail[0] + 1:
         tail[0] += 1
-        if head[1] != tail[1]:
-            tail[1] = head[1]
+        if head[1] > tail[1]:
+            tail[1] += 1
+        elif head[1] < tail[1]:
+            tail[1] -= 1
     elif head[1] < tail[1] - 1:
         tail[1] -= 1
-        if head[0] != tail[0]:
-            tail[0] = head[0]
+        if head[0] > tail[0]:
+            tail[0] += 1
+        elif head[0] < tail[0]:
+            tail[0] -= 1
     elif head[1] > tail[1] + 1:
         tail[1] += 1
-        if head[0] != tail[0]:
-            tail[0] = head[0]
+        if head[0] > tail[0]:
+            tail[0] += 1
+        elif head[0] < tail[0]:
+            tail[0] -= 1
 
 
 if __name__ == '__main__':
