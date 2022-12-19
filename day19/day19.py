@@ -39,17 +39,25 @@ def get_max_geodes(blueprint, minutes):
         'obs_robots': 0, 'obs': 0,
         'geo_robots': 0, 'geo': 0
     }
-    max_geodes = 0
     states = [state]
+
+    max_geodes = 0
+
     while states:
         state = states.pop()
+
+        # don't process states that can't possibly reach the best found overall
         if max_geodes > state['geo'] + max_possible_geos(state['geo_robots'], minutes - state['time']):
             continue
+
+        # don't process states that were less efficient than one already found
         robots = (state['ore_robots'], state['clay_robots'], state['obs_robots'], state['geo_robots'])
         if robots in best_states.keys() and best_states[robots] < state['time']:
             continue
         else:
             best_states[robots] = state['time']
+
+        # test adding an ore robot if it would possibly be useful
         if state['ore_robots'] <= max_ore:
             new_state = loads(dumps(state))
             dt = next(
@@ -63,6 +71,8 @@ def get_max_geodes(blueprint, minutes):
                 new_state['ore'] -= blueprint['ore_cost']
                 new_state['ore_robots'] += 1
                 states.append(new_state)
+
+        # test adding a clay robot if it would possibly be useful
         if state['clay_robots'] <= blueprint['obs_clay_cost']:
             new_state = loads(dumps(state))
             dt = next(
@@ -76,6 +86,8 @@ def get_max_geodes(blueprint, minutes):
                 new_state['ore'] -= blueprint['clay_cost']
                 new_state['clay_robots'] += 1
                 states.append(new_state)
+
+        # test adding an obsidian robot if it would be possible and useful
         if state['obs_robots'] <= blueprint['geo_obs_cost'] and state['clay_robots'] > 0:
             new_state = loads(dumps(state))
             dt = next(
@@ -91,6 +103,8 @@ def get_max_geodes(blueprint, minutes):
                 new_state['clay'] -= blueprint['obs_clay_cost']
                 new_state['obs_robots'] += 1
                 states.append(new_state)
+
+        # test adding a geode robot if possible
         if state['obs_robots'] > 0:
             new_state = loads(dumps(state))
             dt = next(
